@@ -76,10 +76,11 @@ int main()
 	std::thread t1([&]() {std::unique_lock<std::mutex> l(mut);cond.wait(l, [&]()->bool{return ready;}); printf("hoge\n");});
 	std::thread t2([&]() {std::unique_lock<std::mutex> l(mut);cond.wait(l, [&]()->bool{return ready;}); printf("uhe\n");});
 
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	{
 		std::unique_lock<std::mutex> l(mut);
 		ready = true;
-		cond.notify_one();
+		cond.notify_all();
 	}
 	t1.join();
 	t2.join();
